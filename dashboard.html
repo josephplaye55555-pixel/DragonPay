@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DragonPay Pro - Dashboard</title>
+    
+    <!-- Browser Tab Logo (Favicon) -->
+    <link rel="icon" type="image/png" href="logo.png">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0f172a; color: #ffffff; padding: 20px; }
+        
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; background: #1e293b; border-radius: 12px; margin-bottom: 20px; }
+        .logo-container { display: flex; align-items: center; gap: 10px; }
+        .logo-img { height: 38px; width: 38px; border-radius: 8px; object-fit: cover; }
+        .logo-text { font-size: 20px; font-weight: bold; color: #38bdf8; }
+        .logout-btn { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+
+        .card { background: linear-gradient(135deg, #1e293b, #334155); border-radius: 16px; padding: 25px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); position: relative; }
+        .welcome { font-size: 16px; color: #94a3b8; }
+        .user-name { font-size: 24px; font-weight: bold; color: #fff; margin-bottom: 5px; }
+        
+        /* Numeric UID Box Style */
+        .user-uid-box { font-size: 13px; font-weight: 600; color: #38bdf8; background: rgba(56, 189, 248, 0.1); padding: 4px 10px; border-radius: 6px; display: inline-block; margin-bottom: 15px; border: 1px solid rgba(56, 189, 248, 0.2); letter-spacing: 0.5px; }
+        
+        .balance-label { font-size: 14px; color: #38bdf8; text-transform: uppercase; letter-spacing: 1px; }
+        .balance-amount { font-size: 36px; font-weight: bold; margin-top: 5px; }
+
+        .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .action-card { background: #1e293b; border: 1px solid #334155; padding: 20px; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.3s; text-decoration: none; color: white; }
+        .action-card:hover { border-color: #38bdf8; background: #26334d; }
+        .action-icon { font-size: 28px; margin-bottom: 8px; }
+        .action-title { font-weight: bold; font-size: 16px; }
+
+        /* Menu list ka style */
+        .menu-list { display: flex; flex-direction: column; gap: 12px; }
+        .menu-item { background: #1e293b; border: 1px solid #334155; padding: 15px 20px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: white; font-weight: 500; transition: 0.3s; }
+        .menu-item:hover { border-color: #38bdf8; background: #26334d; }
+        .menu-left { display: flex; align-items: center; gap: 12px; }
+        .menu-icon { font-size: 20px; }
+        .badge { background: #10b981; color: white; font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 20px; }
+        
+        .support-card { background: #1e293b; border: 1px solid #334155; padding: 15px 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 10px; }
+        .telegram-btn { display: inline-block; background: #0088cc; color: white; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-size: 14px; font-weight: bold; transition: 0.2s; width: fit-content; margin-left: 32px; }
+        .telegram-btn:hover { background: #006699; }
+    </style>
+
+    <!-- Firebase Compat SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+    <div class="navbar">
+        <!-- Logo Image + Text -->
+        <div class="logo-container">
+            <img src="logo.png" alt="Logo" class="logo-img" onerror="this.style.display='none'">
+            <div class="logo-text">DragonPay Pro</div>
+        </div>
+        <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+
+    <div class="card">
+        <div class="welcome">Welcome back,</div>
+        <div class="user-name" id="userName">Loading...</div>
+        
+        <!-- 🔥 Only Numeric UID Section -->
+        <div class="user-uid-box">User ID: <span id="userUID">Loading...</span></div>
+        
+        <div class="balance-label">Total Balance</div>
+        <div class="balance-amount">₹<span id="userBalance">0</span></div>
+    </div>
+
+    <!-- Deposit & Withdraw Section -->
+    <div class="actions">
+        <a href="deposit.html" class="action-card">
+            <div class="action-icon">💳</div>
+            <div class="action-title">Deposit</div>
+        </a>
+        <a href="withdraw.html" class="action-card">
+            <div class="action-icon">💸</div>
+            <div class="action-title">Withdraw</div>
+        </a>
+    </div>
+
+    <!-- Menu Options -->
+    <div class="menu-list">
+        
+        <!-- Add Bank -->
+        <a href="add-bank.html" class="menu-item">
+            <div class="menu-left">
+                <span class="menu-icon">💳</span>
+                <span>Add Bank</span>
+            </div>
+            <span style="color: #94a3b8;">❯</span>
+        </a>
+
+        <!-- Transaction History -->
+        <a href="transactions.html" class="menu-item">
+            <div class="menu-left">
+                <span class="menu-icon">📜</span>
+                <span>Transaction History</span>
+            </div>
+            <span style="color: #94a3b8;">❯</span>
+        </a>
+
+        <!-- Gaming Fund (7%) -->
+        <div class="menu-item" style="cursor: default;">
+            <div class="menu-left">
+                <span class="menu-icon">🎮</span>
+                <span>Gaming Fund</span>
+            </div>
+            <span class="badge">7%</span>
+        </div>
+
+        <!-- Mixed Fund (9%) -->
+        <div class="menu-item" style="cursor: default;">
+            <div class="menu-left">
+                <span class="menu-icon">🎲</span>
+                <span>Mixed Fund</span>
+            </div>
+            <span class="badge" style="background: #3b82f6;">9%</span>
+        </div>
+
+        <!-- Stock Fund (11%) -->
+        <div class="menu-item" style="cursor: default;">
+            <div class="menu-left">
+                <span class="menu-icon">📈</span>
+                <span>Stock Fund</span>
+            </div>
+            <span class="badge" style="background: #8b5cf6;">11%</span>
+        </div>
+
+        <!-- Support (Telegram) -->
+        <div class="support-card">
+            <div class="menu-left">
+                <span class="menu-icon">🎧</span>
+                <span style="font-weight: 500;">Support</span>
+            </div>
+            <a href="https://t.me/your_telegram_username" target="_blank" class="telegram-btn">
+                💬 Telegram: @****
+            </a>
+        </div>
+
+    </div>
+
+    <script>
+        // Firebase Config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBcSZtw2LMh7fpUO0u-rPh4I1wfocvjO80",
+            authDomain: "dragonpay-pro.firebaseapp.com",
+            projectId: "dragonpay-pro",
+            storageBucket: "dragonpay-pro.firebasestorage.app",
+            messagingSenderId: "516847420576",
+            appId: "1:516847420576:web:f97bca00131334239775c5"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // 6-digit Random Number Generator
+        function generateNumericID() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+
+        // Check Login State & Fetch/Create Numeric UID
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                try {
+                    const userRef = db.collection('users').doc(user.uid);
+                    const userDoc = await userRef.get();
+
+                    if (userDoc.exists) {
+                        const data = userDoc.data();
+                        
+                        // Agar user ka numeric ID pehle se bana hai toh wahi dikhayega
+                        if (data.numericUid) {
+                            document.getElementById('userUID').innerText = data.numericUid;
+                        } else {
+                            // Agar nahi bana hai toh naya 6-digit ID banayega
+                            const newNumericUid = generateNumericID();
+                            await userRef.update({ numericUid: newNumericUid });
+                            document.getElementById('userUID').innerText = newNumericUid;
+                        }
+
+                        document.getElementById('userName').innerText = data.name || "User";
+                        document.getElementById('userBalance').innerText = data.balance || 0;
+                    }
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
+                }
+            } else {
+                // If not logged in, redirect to login page
+                window.location.href = "login.html";
+            }
+        });
+
+        // Logout Logic
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            auth.signOut().then(() => {
+                window.location.href = "login.html";
+            });
+        });
+    </script>
+</body>
+</html>

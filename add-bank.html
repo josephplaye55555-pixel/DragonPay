@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DragonPay Pro - Add Bank</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0f172a; color: #ffffff; padding: 20px; }
+        
+        .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .back-btn { background: #1e293b; color: #38bdf8; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: bold; }
+        
+        .form-card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 14px; color: #94a3b8; margin-bottom: 8px; }
+        .form-group input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #ffffff; font-size: 16px; outline: none; }
+        .form-group input:focus { border-color: #38bdf8; }
+
+        .submit-btn { width: 100%; background: #38bdf8; color: #0f172a; border: none; padding: 14px; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        .submit-btn:hover { background: #0284c7; color: #ffffff; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="dashboard.html" class="back-btn">← Back</a>
+        <h2>Add Bank Details</h2>
+        <div></div>
+    </div>
+
+    <div class="form-card">
+        <form id="bankForm">
+            <div class="form-group">
+                <label>Account Holder Name</label>
+                <input type="text" placeholder="Enter full name" required>
+            </div>
+
+            <div class="form-group">
+                <label>Bank Name</label>
+                <input type="text" placeholder="e.g. State Bank of India" required>
+            </div>
+
+            <div class="form-group">
+                <label>Account Number</label>
+                <input type="text" placeholder="Enter account number" required>
+            </div>
+
+            <div class="form-group">
+                <label>IFSC Code</label>
+                <input type="text" placeholder="e.g. SBIN0001234" required>
+            </div>
+
+            <button type="submit" class="submit-btn">Save Bank Details</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('bankForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Bank Details Submitted Successfully!');
+            window.location.href = "dashboard.html";
+        });
+    </script>
+</body>
+</html>

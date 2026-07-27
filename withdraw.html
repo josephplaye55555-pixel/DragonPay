@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DragonPay Pro - Withdraw</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0f172a; color: #ffffff; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 25px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); }
+        h2 { text-align: center; margin-bottom: 20px; color: #38bdf8; }
+        .balance-info { text-align: center; background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 20px; color: #94a3b8; font-size: 14px; }
+        .balance-info span { color: #38bdf8; font-weight: bold; font-size: 16px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 6px; font-size: 14px; color: #94a3b8; }
+        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background-color: #0f172a; color: #fff; font-size: 15px; outline: none; }
+        button { width: 100%; padding: 12px; border: none; border-radius: 8px; background: linear-gradient(90deg, #ef4444, #dc2626); color: #ffffff; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        button:disabled { background: #475569; color: #888; }
+        .back-link { display: block; text-align: center; margin-top: 15px; color: #94a3b8; text-decoration: none; font-size: 14px; }
+    </style>
+
+    <!-- Firebase Compat SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+
+    <div class="card">
+        <h2>Withdraw Money</h2>
+
+        <div class="balance-info">
+            Available Balance: ₹<span id="currentBalance">0</span>
+        </div>
+
+        <form id="withdrawForm">
+            <div class="form-group">
+                <label>Amount (₹)</label>
+                <input type="number" id="amount" placeholder="Enter amount" min="50" required>
+            </div>
+
+            <div class="form-group">
+                <label>Your UPI ID / Bank Details</label>
+                <input type="text" id="upiDetails" placeholder="example@upi or Account No." required>
+            </div>
+
+            <button type="submit" id="submitBtn">Request Withdrawal</button>
+        </form>
+
+        <a href="dashboard.html" class="back-link">⬅ Back to Dashboard</a>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBcSZtw2LMh7fpUO0u-rPh4I1wfocvjO80",
+            authDomain: "dragonpay-pro.firebaseapp.com",
+            projectId: "dragonpay-pro",
+            storageBucket: "dragonpay-pro.firebasestorage.app",
+            messagingSenderId: "516847420576",
+            appId: "1:516847420576:web:f97bca00131334239775c5"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let currentUser = null;
+        let userBalance = 0;
+
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                const userDoc = await db.collection('users').doc(user.uid).get();
+                if (userDoc.exists) {
+                    userBalance = userDoc.data().balance || 0;
+                    document.getElementById('currentBalance').innerText = userBalance;
+                }
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        document.getElementById('withdrawForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+
+            const amount = parseFloat(document.getElementById('amount').value);
+            const upiDetails = document.getElementById('upiDetails').value.trim();
+
+            if (amount > userBalance) {
+                alert("❌ Insufficient balance!");
+                return;
+            }
+
+            btn.innerText = "Submitting...";
+            btn.disabled = true;
+
+            try {
+                // Save Withdrawal Request in Firestore
+                await db.collection('withdrawals').add({
+                    userId: currentUser.uid,
+                    userEmail: currentUser.email,
+                    amount: amount,
+                    upiDetails: upiDetails,
+                    status: 'pending',
+                    createdAt: new Date()
+                });
+
+                alert("✅ Withdrawal request submitted successfully!");
+                window.location.href = "dashboard.html";
+
+            } catch (error) {
+                console.error(error);
+                alert("❌ Error: " + error.message);
+            } finally {
+                btn.innerText = "Request Withdrawal";
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

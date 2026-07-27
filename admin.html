@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DragonPay Pro - Admin Panel</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #0b1120; color: #ffffff; padding: 20px; display: none; } /* Security Check ke baad hi dikhega */
+        
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #1e293b; border-radius: 12px; margin-bottom: 25px; border: 1px solid #334155; }
+        .logo { font-size: 20px; font-weight: bold; color: #ef4444; }
+        .badge-admin { background: #ef4444; color: white; padding: 4px 8px; border-radius: 6px; font-size: 12px; }
+
+        .section-title { font-size: 18px; margin-bottom: 12px; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
+
+        .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #334155; font-size: 14px; }
+        th { color: #94a3b8; font-weight: 600; background: #0f172a; }
+        
+        .btn { border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; margin-right: 5px; }
+        .btn-approve { background: #10b981; color: white; }
+        .btn-reject { background: #ef4444; color: white; }
+        .btn-approve:hover { background: #059669; }
+        .btn-reject:hover { background: #dc2626; }
+
+        .form-group { display: flex; gap: 10px; margin-top: 10px; }
+        .form-group input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none; }
+        .btn-update { background: #38bdf8; color: #0f172a; font-weight: bold; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo">DragonPay Pro <span class="badge-admin">Admin</span></div>
+        <a href="dashboard.html" style="color: #94a3b8; text-decoration: none; font-size: 14px;">Go to App →</a>
+    </div>
+
+    <!-- 1. Manage User Balance -->
+    <div class="section-title">👤 User Balance Management</div>
+    <div class="card">
+        <p style="font-size: 14px; color: #94a3b8; margin-bottom: 10px;">User ka balance direct update karein:</p>
+        <div class="form-group">
+            <input type="text" id="userEmail" placeholder="User Email / UID">
+            <input type="number" id="newBalance" placeholder="New Balance (₹)">
+            <button class="btn-update" onclick="updateBalance()">Update Balance</button>
+        </div>
+    </div>
+
+    <!-- 2. Pending Deposit Requests -->
+    <div class="section-title">📥 Pending Deposits</div>
+    <div class="card" style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Fund Type</th>
+                    <th>Amount</th>
+                    <th>UTR No.</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>user1@gmail.com</td>
+                    <td>Gaming Fund (7%)</td>
+                    <td>₹500</td>
+                    <td><code>123456789012</code></td>
+                    <td>
+                        <button class="btn btn-approve" onclick="alert('Deposit Approved!')">Approve</button>
+                        <button class="btn btn-reject" onclick="alert('Deposit Rejected!')">Reject</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 3. Pending Withdraw Requests -->
+    <div class="section-title">📤 Pending Withdrawals</div>
+    <div class="card" style="overflow-x: auto;">
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Amount</th>
+                    <th>UPI / Bank Details</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>user2@gmail.com</td>
+                    <td>₹1,000</td>
+                    <td><code>example@upi</code></td>
+                    <td>
+                        <button class="btn btn-approve" onclick="alert('Withdrawal Approved!')">Approve</button>
+                        <button class="btn btn-reject" onclick="alert('Withdrawal Rejected!')">Reject</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // ADMIN PASSWORD SECURITY CHECK
+        window.onload = function() {
+            let pass = prompt("🔐 Enter Admin Password:");
+            if (pass === "honey999@ai") {
+                document.body.style.display = "block"; // Password sahi hone par hi page dikhega
+            } else {
+                alert("❌ Incorrect Password! Access Denied.");
+                window.location.href = "dashboard.html"; // Galat password par dashboard bhej dega
+            }
+        };
+
+        function updateBalance() {
+            const email = document.getElementById('userEmail').value;
+            const balance = document.getElementById('newBalance').value;
+            
+            if(!email || !balance) {
+                alert('Kripya Email aur Balance dono bharein!');
+                return;
+            }
+            
+            alert(`User ${email} ka balance ₹${balance} update kar diya gaya hai!`);
+            document.getElementById('userEmail').value = '';
+            document.getElementById('newBalance').value = '';
+        }
+    </script>
+</body>
+</html>
