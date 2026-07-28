@@ -1,96 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DragonPay Pro - Login</title>
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #0f172a; color: #ffffff; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-        .card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 30px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5); }
-        h2 { text-align: center; margin-bottom: 24px; color: #38bdf8; font-size: 26px; }
-        .form-group { margin-bottom: 18px; }
-        label { display: block; margin-bottom: 6px; font-size: 14px; color: #94a3b8; }
-        input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid #475569; background-color: #0f172a; color: #fff; font-size: 15px; outline: none; }
-        input:focus { border-color: #38bdf8; }
-        button { width: 100%; padding: 12px; border: none; border-radius: 8px; background: linear-gradient(90deg, #38bdf8, #2563eb); color: #ffffff; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        button:disabled { background: #475569; color: #888; cursor: not-allowed; }
-        .register-link { text-align: center; margin-top: 20px; font-size: 14px; color: #94a3b8; }
-        .register-link a { color: #38bdf8; text-decoration: none; font-weight: bold; }
-    </style>
+<!-- Balance Display Box -->
+<div style="background:#007bff; color:white; padding:15px; border-radius:8px; text-align:center; font-size:20px; font-weight:bold;">
+    Wallet Balance: <span id="appWalletBalance">₹0.00</span>
+</div>
 
-    <!-- Firebase Compat SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-</head>
-<body>
+<script>
+    // App Mein Balance Show Karne Ka Script
+    function fetchWalletBalance() {
+        let users = JSON.parse(localStorage.getItem('dragonpay_users')) || [];
+        
+        // Pehle user ka balance dikhane ke liye (Aap apne according User ID replace kar sakte hain)
+        if(users.length > 0) {
+            document.getElementById('appWalletBalance').innerText = "₹" + users[0].balance.toFixed(2);
+        } else {
+            document.getElementById('appWalletBalance').innerText = "₹0.00";
+        }
+    }
 
-    <div class="card">
-        <h2>DragonPay Pro</h2>
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" placeholder="example@mail.com" required>
-            </div>
-
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Enter password" required>
-            </div>
-
-            <button type="submit" id="submitBtn">Login</button>
-        </form>
-
-        <div class="register-link">
-            Don't have an account? <a href="register.html">Sign Up</a>
-        </div>
-    </div>
-
-    <script>
-        // 🔥 Aapki Real Firebase Credentials
-        const firebaseConfig = {
-            apiKey: "AIzaSyBcSZtw2LMh7fpUO0u-rPh4I1wfocvjO80",
-            authDomain: "dragonpay-pro.firebaseapp.com",
-            projectId: "dragonpay-pro",
-            storageBucket: "dragonpay-pro.firebasestorage.app",
-            messagingSenderId: "516847420576",
-            appId: "1:516847420576:web:f97bca00131334239775c5",
-            measurementId: "G-HD5YBHYTD4"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-
-        // Form Submit Handler
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = "Logging in...";
-            btn.disabled = true;
-
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-
-            try {
-                // Firebase Login Call
-                await auth.signInWithEmailAndPassword(email, password);
-                
-                alert("🔓 Login Successful!");
-                window.location.href = "dashboard.html";
-
-            } catch (error) {
-                console.error(error);
-                let msg = error.message;
-                if (error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
-                    msg = "Galat Email ya Password!";
-                }
-                alert("❌ Login Failed: " + msg);
-            } finally {
-                btn.innerText = "Login";
-                btn.disabled = false;
-            }
-        });
-    </script>
-</body>
-</html>
+    // Page load hote hi balance update hoga
+    window.onload = fetchWalletBalance;
+</script>
