@@ -1,132 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DragonPay Pro - Admin Panel</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: #0b1120; color: #ffffff; padding: 20px; display: none; } /* Security Check ke baad hi dikhega */
-        
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #1e293b; border-radius: 12px; margin-bottom: 25px; border: 1px solid #334155; }
-        .logo { font-size: 20px; font-weight: bold; color: #ef4444; }
-        .badge-admin { background: #ef4444; color: white; padding: 4px 8px; border-radius: 6px; font-size: 12px; }
-
-        .section-title { font-size: 18px; margin-bottom: 12px; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
-
-        .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
-
+        body { font-family: Arial, sans-serif; background: #eef2f5; padding: 15px; margin: 0; }
+        .card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        h2, h3 { color: #2c3e50; margin-top: 0; }
         table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #334155; font-size: 14px; }
-        th { color: #94a3b8; font-weight: 600; background: #0f172a; }
-        
-        .btn { border: none; padding: 6px 12px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 12px; margin-right: 5px; }
-        .btn-approve { background: #10b981; color: white; }
-        .btn-reject { background: #ef4444; color: white; }
-        .btn-approve:hover { background: #059669; }
-        .btn-reject:hover { background: #dc2626; }
-
-        .form-group { display: flex; gap: 10px; margin-top: 10px; }
-        .form-group input { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none; }
-        .btn-update { background: #38bdf8; color: #0f172a; font-weight: bold; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background: #007bff; color: white; }
+        input[type="number"] { width: 80px; padding: 5px; text-align: center; }
+        button { background: #28a745; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-weight: bold; }
+        button:hover { background: #218838; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="logo">DragonPay Pro <span class="badge-admin">Admin</span></div>
-        <a href="dashboard.html" style="color: #94a3b8; text-decoration: none; font-size: 14px;">Go to App →</a>
-    </div>
-
-    <!-- 1. Manage User Balance -->
-    <div class="section-title">👤 User Balance Management</div>
     <div class="card">
-        <p style="font-size: 14px; color: #94a3b8; margin-bottom: 10px;">User ka balance direct update karein:</p>
-        <div class="form-group">
-            <input type="text" id="userEmail" placeholder="User Email / UID">
-            <input type="number" id="newBalance" placeholder="New Balance (₹)">
-            <button class="btn-update" onclick="updateBalance()">Update Balance</button>
-        </div>
+        <h2>🐉 DragonPay Pro Admin Panel</h2>
+        <p>Total Registered Users: <b id="userCount">0</b></p>
     </div>
 
-    <!-- 2. Pending Deposit Requests -->
-    <div class="section-title">📥 Pending Deposits</div>
-    <div class="card" style="overflow-x: auto;">
+    <div class="card">
+        <h3>User Balance Manage Karein</h3>
         <table>
             <thead>
                 <tr>
-                    <th>User</th>
-                    <th>Fund Type</th>
-                    <th>Amount</th>
-                    <th>UTR No.</th>
+                    <th>User ID / Phone</th>
+                    <th>Current Balance (₹)</th>
+                    <th>New Amount</th>
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>user1@gmail.com</td>
-                    <td>Gaming Fund (7%)</td>
-                    <td>₹500</td>
-                    <td><code>123456789012</code></td>
-                    <td>
-                        <button class="btn btn-approve" onclick="alert('Deposit Approved!')">Approve</button>
-                        <button class="btn btn-reject" onclick="alert('Deposit Rejected!')">Reject</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <!-- 3. Pending Withdraw Requests -->
-    <div class="section-title">📤 Pending Withdrawals</div>
-    <div class="card" style="overflow-x: auto;">
-        <table>
-            <thead>
-                <tr>
-                    <th>User</th>
-                    <th>Amount</th>
-                    <th>UPI / Bank Details</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>user2@gmail.com</td>
-                    <td>₹1,000</td>
-                    <td><code>example@upi</code></td>
-                    <td>
-                        <button class="btn btn-approve" onclick="alert('Withdrawal Approved!')">Approve</button>
-                        <button class="btn btn-reject" onclick="alert('Withdrawal Rejected!')">Reject</button>
-                    </td>
-                </tr>
+            <tbody id="userTable">
+                <!-- Data Javascript se aayega -->
             </tbody>
         </table>
     </div>
 
     <script>
-        // ADMIN PASSWORD SECURITY CHECK
-        window.onload = function() {
-            let pass = prompt("🔐 Enter Admin Password:");
-            if (pass === "honey999@ai") {
-                document.body.style.display = "block"; // Password sahi hone par hi page dikhega
-            } else {
-                alert("❌ Incorrect Password! Access Denied.");
-                window.location.href = "dashboard.html"; // Galat password par dashboard bhej dega
-            }
-        };
+        // Password Check
+        let pass = prompt("Admin Password Daalein:");
+        if (pass !== "honey999@ai") {
+            alert("Galat Password!");
+            document.body.innerHTML = "<h2 style='color:red; text-align:center; margin-top:50px;'>Access Denied!</h2>";
+        } else {
+            loadUsers();
+        }
 
-        function updateBalance() {
-            const email = document.getElementById('userEmail').value;
-            const balance = document.getElementById('newBalance').value;
-            
-            if(!email || !balance) {
-                alert('Kripya Email aur Balance dono bharein!');
-                return;
+        function loadUsers() {
+            // Check default users or existing users
+            let users = JSON.parse(localStorage.getItem('dragonpay_users')) || [
+                { id: "9876543210", balance: 100 },
+                { id: "User_Demo", balance: 0 }
+            ];
+
+            // Save initial data if empty
+            if (!localStorage.getItem('dragonpay_users')) {
+                localStorage.setItem('dragonpay_users', JSON.stringify(users));
             }
+
+            document.getElementById('userCount').innerText = users.length;
+            let tbody = document.getElementById('userTable');
+            tbody.innerHTML = "";
+
+            users.forEach((u, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><b>${u.id}</b></td>
+                        <td style="color:green; font-weight:bold;">₹${u.balance.toFixed(2)}</td>
+                        <td><input type="number" id="bal_${index}" value="${u.balance}"></td>
+                        <td><button onclick="updateBalance(${index})">Update Balance</button></td>
+                    </tr>
+                `;
+            });
+        }
+
+        function updateBalance(index) {
+            let users = JSON.parse(localStorage.getItem('dragonpay_users'));
+            let newBal = document.getElementById(`bal_${index}`).value;
             
-            alert(`User ${email} ka balance ₹${balance} update kar diya gaya hai!`);
-            document.getElementById('userEmail').value = '';
-            document.getElementById('newBalance').value = '';
+            users[index].balance = parseFloat(newBal) || 0;
+            localStorage.setItem('dragonpay_users', JSON.stringify(users));
+            
+            alert("Balance successfully update ho gaya hai!");
+            loadUsers();
         }
     </script>
 </body>
